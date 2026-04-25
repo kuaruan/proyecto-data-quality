@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 
-st.set_page_config(page_title="Validador de Datos")
+st.set_page_config(page_title="Validador de Datos", layout="wide")
 
 st.title("Sistema de Validación de Datos")
 st.markdown("""
