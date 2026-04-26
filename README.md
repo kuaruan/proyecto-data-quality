@@ -3,6 +3,8 @@ Proyecto de práctica - Calidad de datos
 
 Objetivo: Este proyecto automatiza la validación de datos de ventas 
 
+Link de aplicación: https://proyecto-data-quality-xjqdnmfjdthpmwxhwuethl.streamlit.app/
+
 Herramientas utilizadas: 
 - Python
 - Github Actions
