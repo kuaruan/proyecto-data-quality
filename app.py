@@ -2,45 +2,60 @@ import streamlit as st
 import pandas as pd
 import os
 
-st.set_page_config(page_title="Validador de Datos", layout="wide")
+st.set_page_config(page_title="Validador de Data Quality", layout="wide")
 
-st.title("Sistema de Validación de Datos")
+st.title("🛡️ Sistema de Validación de Calidad de Datos")
 st.markdown("""
-Cargue su archivo de datos en formato csv para verificar las reglas de calidad 
-antes de ser procesado.
+Cargue su archivo **CSV** para verificar automáticamente las reglas de negocio 
+y asegurar la integridad de la información antes de procesarla.
+---
 """)
 
-uploaded_file = st.file_uploader("Elige un archivo CSV", type="csv") # componente para subir datos
+uploaded_file = st.file_uploader(" Seleccione un archivo CSV", type="csv")
 
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file) # Lectura archivo
-    
-    st.subheader("Vista previa de los datos")
-    st.dataframe(df.head())
+    try:
+        df = pd.read_csv(uploaded_file)
+        
+        st.subheader("🔍 Vista previa de los datos")
+        st.dataframe(df.head(), use_container_width=True)
 
-    if st.button("Validar Calidad de Datos"): # Botón inicio validación
-        errors = []
-                
-        expected_columns = ['fecha', 'producto', 'cantidad', 'precio'] # Comprobación de existencia
-        missing_cols = [col for col in expected_columns if col not in df.columns]
-        if missing_cols:
-            errors.append(f"Faltan columnas: {missing_cols}")
-
-        if df.isnull().values.any(): # Existencia de valores null
-            errors.append("El archivo contiene valores vacíos (nulos).")
-
-        if 'cantidad' in df.columns and (df['cantidad'] <= 0).any(): # Validar cantidades 
-            errors.append("Hay registros con cantidad menor o igual a cero.")
-
-        if 'precio' in df.columns and (df['precio'] < 0).any(): # Precio positivo
-            errors.append("Hay precios negativos.")
-
-        if not errors: 
-            st.success("Los datos cumplen con todos los estándares de calidad.")
+        if st.button("Iniciar Validación de Calidad"):
+            errors = []
             
-            if st.button("Cargar a la Base de Datos"): # Enviar a supabase para la carga
-                st.info("Conectando con Supabase... (Próximo paso)")
-        else:
-            st.error("Se encontraron los siguientes problemas:")
-            for error in errors:
-                st.write(error)
+            expected_columns = ['fecha', 'producto', 'cantidad', 'precio'] # Verificación de columnas
+            missing_cols = [col for col in expected_columns if col not in df.columns]
+            
+            if missing_cols:
+                errors.append(f"Estructura incorrecta: Faltan las columnas {missing_cols}")
+
+            if not missing_cols:
+                
+                if df.isnull().values.any(): # Valores nulos
+                    num_nulos = df.isnull().sum().sum()
+                    errors.append(f"Se encontraron {num_nulos} valores vacíos en el archivo.")
+
+                if (df['cantidad'] <= 0).any():
+                    errors.append("Existen registros con cantidades menores o iguales a cero.")
+
+                if (df['precio'] < 0).any(): 
+                    errors.append("Se detectaron precios negativos en la columna 'precio'.")
+
+            if not errors:
+                st.success("Validación Exitosa. Todos los datos cumplen con los estándares establecidos.")
+                
+                st.divider()
+                if st.button("Cargar a Base de Datos"):
+                    st.info("Conectando con el servidor de almacenamiento... (En desarrollo)")
+            else:
+                st.error("Se encontraron problemas de calidad:**")
+                for error in errors:
+                    st.warning(f"• {error}")
+
+    except Exception as e:
+        st.error("Error Crítico: No se pudo procesar el archivo. Asegúrese de que el CSV no esté dañado y tenga un formato estándar.")
+        
+        print(f"Log interno: {e}")
+
+else:
+    st.info("Por favor, cargue un archivo CSV para comenzar el análisis.")
