@@ -5,11 +5,6 @@ import os
 st.set_page_config(page_title="Validador de calidad de datos", layout="wide")
 
 st.title("Sistema de validación de calidad de datos")
-st.markdown("""
-Cargue su archivo csv para verificar automáticamente las reglas de negocio 
-y asegurar la integridad de la información antes de procesarla.
----
-""")
 
 uploaded_file = st.file_uploader(" Seleccione un archivo csv", type="csv")
 
