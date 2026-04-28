@@ -2,22 +2,22 @@ import streamlit as st
 import pandas as pd
 import os
 
-st.set_page_config(page_title="Validador de Data Quality", layout="wide")
+st.set_page_config(page_title="Validador de calidad de datos", layout="wide")
 
-st.title("🛡️ Sistema de Validación de Calidad de Datos")
+st.title("Sistema de validación de calidad de datos")
 st.markdown("""
-Cargue su archivo **CSV** para verificar automáticamente las reglas de negocio 
+Cargue su archivo csv para verificar automáticamente las reglas de negocio 
 y asegurar la integridad de la información antes de procesarla.
 ---
 """)
 
-uploaded_file = st.file_uploader(" Seleccione un archivo CSV", type="csv")
+uploaded_file = st.file_uploader(" Seleccione un archivo csv", type="csv")
 
 if uploaded_file is not None:
     try:
         df = pd.read_csv(uploaded_file)
         
-        st.subheader("🔍 Vista previa de los datos")
+        st.subheader("Vista previa de los datos")
         st.dataframe(df.head(), use_container_width=True)
 
         if st.button("Iniciar Validación de Calidad"):
@@ -58,4 +58,4 @@ if uploaded_file is not None:
         print(f"Log interno: {e}")
 
 else:
-    st.info("Por favor, cargue un archivo CSV para comenzar el análisis.")
+    st.info("Por favor, cargue un archivo csv para comenzar el análisis.")
